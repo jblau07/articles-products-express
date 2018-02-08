@@ -5,10 +5,10 @@ const db = require('../db/products')
 const helpers = require('../helper')
 
 router.get('/new', (req, res) => {
-  return res.render('new');
-})
+    return res.render('new');
+  })
 
-.get('/:id/edit', (req, res) => {
+  .get('/:id/edit', (req, res) => {
     let id = req.params.id;
     let elemIndex = db.findItem(id);
     res.render('partials/edit', elemIndex)
@@ -17,8 +17,11 @@ router.get('/new', (req, res) => {
   .get('/:id', (req, res) => {
     let id = req.params.id;
     let elemIndex = db.findItem(id);
-    console.log(elemIndex);
-    res.render('partials/products', elemIndex);
+    if (elemIndex) {
+      res.render('partials/products', elemIndex);
+    } else {
+      res.render('partials/404');
+    }
   })
 
   .get('/', (req, res) => {
@@ -26,6 +29,7 @@ router.get('/new', (req, res) => {
       db: db.getAll()
     })
   })
+
   .post('/', (req, res) => {
     let body = req.body
 
@@ -42,6 +46,15 @@ router.get('/new', (req, res) => {
     } else {
       // res.send(val);
       res.redirect('/products/new')
+    }
+  })
+
+  .delete('/:id', (req, res) => {
+    let id = req.params.id;
+    if (db.deleteItem(id)) {
+      res.redirect(`/products`)
+    } else {
+      res.redirect(`/products/${id}`)
     }
   })
 
@@ -62,5 +75,6 @@ router.get('/new', (req, res) => {
       res.redirect(`/products/${id}/edit`)
     }
   })
+
 
 module.exports = router;

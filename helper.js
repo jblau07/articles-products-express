@@ -74,12 +74,9 @@ function validatePut(data) {
     }
   }
   if (isValid === false || undefined) {
-    console.log(isValid);
     return errors
   } else {
-    console.log('first', isValid);
     isValid = true
-    console.log(isValid)
     return true
   }
 }
@@ -89,7 +86,6 @@ function edit(id, item) {
   let isValid;
   if (item.name || item.price || item.inventory) {
     if (item.name) {
-      console.log('item name', item.name)
       itemToEdit.name = item.name;
       isValid = true;
     }
@@ -106,3 +102,4 @@ function edit(id, item) {
   }
   return isValid;
 }
+
