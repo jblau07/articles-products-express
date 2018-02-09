@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <h1>EDIT ARTICLE</h1>
+</head>
+<body>
+<form action="/articles/{{id}}?_method=PUT" method="POST" >
+  <label for="PUT-name">Title:</label>
+  <input id="PUT-name" type="text" name="title" placeholder = '{{title}}' value = '{{title}}' >
+
+  <label for="PUT-price">Body:</label>
+  <input id="PUT-price" type="text" name="body" placeholder = '{{body}}' value = '{{body}}'>
+
+  <label for="PUT-inventory">Author:</label>
+  <input id="PUT-inventory" type="text" name="author" placeholder = '{{author}}' value = '{{author}}'>
+
+  <input type="submit" value="Save">
+
+  {{!-- <div class= "error">
+    {{if }} --}}
+  </div>
+</form>
+</form>
+</body>
+</html>

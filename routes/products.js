@@ -5,7 +5,7 @@ const router = express.Router();
 const helpers = require('../helper')
 
 router.get('/new', (req, res) => {
-    return res.render('new');
+    return res.render('new_products');
   })
 
   .get('/:id/edit', (req, res) => {
@@ -26,7 +26,7 @@ router.get('/new', (req, res) => {
       })
       .then(result => {
         console.log(result)
-        res.render('partials/edit', result[0])
+        res.render('partials/edit_products', result[0])
       })
       .catch(err => {
         return res.redirect('/products')
@@ -63,7 +63,7 @@ router.get('/new', (req, res) => {
       .select()
       .then(result => {
         console.log(result)
-        return res.render('index', {
+        return res.render('index_products', {
           product: result
         })
       })
@@ -93,7 +93,7 @@ router.post('/', (req, res) => {
   } else {
     res.json('error');
     // res.send(val);
-    res.redirect('/products/new')
+    res.redirect('/products/new_products')
   }
 })
 router.put('/:id', (req, res) => {
