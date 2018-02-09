@@ -1,5 +1,6 @@
 //modules
 const express = require('express');
+const knex = require('./db/knex.js');
 const handlebars = require('express-handlebars');
 const articles = require('./routes/articles');
 const products = require('./routes/products')

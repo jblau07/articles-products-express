@@ -1,66 +1,151 @@
 const express = require('express');
+const knex = require('../db/knex.js');
 const handlebars = require('express-handlebars');
 const router = express.Router();
-const db = require('../db/products')
 const helpers = require('../helper')
 
 router.get('/new', (req, res) => {
-  return res.render('new');
-})
+    return res.render('new');
+  })
 
-.get('/:id/edit', (req, res) => {
-    let id = req.params.id;
-    let elemIndex = db.findItem(id);
-    res.render('partials/edit', elemIndex)
+  .get('/:id/edit', (req, res) => {
+
+    let productId = req.params.id;
+
+    return knex('products')
+      .where({
+        id: productId
+      })
+      .select()
+      .then(result => {
+        if (result.length) {
+          return result
+        } else {
+          throw new Error('Product not found')
+        }
+      })
+      .then(result => {
+        console.log(result)
+        res.render('partials/edit', result[0])
+      })
+      .catch(err => {
+        return res.redirect('/products')
+
+      })
   })
 
   .get('/:id', (req, res) => {
-    let id = req.params.id;
-    let elemIndex = db.findItem(id);
-    console.log(elemIndex);
-    res.render('partials/products', elemIndex);
+    let productId = req.params.id;
+
+    return knex('products')
+      .where({
+        id: productId
+      })
+      .select()
+      .then(result => {
+        if (result.length) {
+          return result
+        } else {
+          throw new Error('Product not found')
+        }
+      })
+      .then(result => {
+        res.render('partials/products', result[0])
+      })
+      .catch(err => {
+        return res.redirect('/products')
+
+      })
   })
 
   .get('/', (req, res) => {
-    return res.render('index', {
-      db: db.getAll()
-    })
-  })
-  .post('/', (req, res) => {
-    let body = req.body
-
-    const data = {
-      name: body.name,
-      price: Number(body.price),
-      inventory: Number(body.inventory)
-    }
-    const val = helpers.validateProduct(data);
-
-    if (val === true) {
-      db.createProduct(data);
-      res.redirect('/products')
-    } else {
-      // res.send(val);
-      res.redirect('/products/new')
-    }
+    return knex('products')
+      .select()
+      .then(result => {
+        console.log(result)
+        return res.render('index', {
+          product: result
+        })
+      })
   })
 
-  .put('/:id', (req, res) => {
-    let id = req.params.id;
-    let body = req.body;
+router.post('/', (req, res) => {
+  let body = req.body
 
-    const valPut = helpers.validatePut(body);
+  const data = {
+    name: body.name,
+    price: Number(body.price),
+    inventory: Number(body.inventory)
+  }
+  const val = helpers.validateProduct(data);
 
-    if (valPut === true) {
-      let editItem = helpers.edit(id, body);
-      if (editItem === true) {
-        res.redirect(`/products/${id}`)
-      } else {
-        res.redirect(`/products/${id}/edit`)
-      }
-    } else {
-      res.redirect(`/products/${id}/edit`)
-    }
+  if (val === true) {
+    return knex('products')
+      .insert(data)
+      .then(result => {
+        res.redirect('/products')
+      })
+      .catch(err => {
+        res.status(400).json({
+          message: 'Bad request'
+        })
+      })
+  } else {
+    res.json('error');
+    // res.send(val);
+    res.redirect('/products/new')
+  }
+})
+router.put('/:id', (req, res) => {
+    let data = {
+      name,
+      price,
+      inventory
+    } = req.body;
+    let productId = req.params.id;
+
+    return knex('products').where('id', productId).update({
+        name: data.name,
+        price: data.price,
+        inventory: data.inventory,
+      }, '*')
+      .then(result => {
+        return res.redirect(`/products/${productId}`);
+      })
+      .catch(err => {
+        return res.redirect(`/products/${productId}/edit`);
+      })
   })
+
+  .delete('/:id', (req, res) => {
+    let productId = req.params.id;
+
+    return knex('products')
+      .where({
+        id: productId
+      })
+      .select()
+      .then(result => {
+        if (result.length) {
+          return result;
+        } else {
+          throw new Error('Product not found in database')
+        }
+      })
+      .then(result => {
+        knex('products')
+          .delete()
+          .where({
+            id: productId
+          })
+          .then(result => {
+            res.redirect(`/products`)
+          })
+      })
+      .catch(err => {
+        res.redirect(`/products/${productId}`)
+      })
+  })
+
 
 module.exports = router;

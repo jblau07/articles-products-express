@@ -10,13 +10,13 @@
 <body>
 <form action="/products/{{id}}?_method=PUT" method="POST" >
   <label for="PUT-name">Name:</label>
-  <input id="PUT-name" type="text" name="name" value = '{{name}}' >
+  <input id="PUT-name" type="text" name="name" placeholder = '{{name}}' value = '{{name}}' >
 
   <label for="PUT-price">Price:</label>
-  <input id="PUT-price" type="text" name="price" value = '{{price}}'>
+  <input id="PUT-price" type="text" name="price" placeholder = '{{price}}' value = '{{price}}'>
 
   <label for="PUT-inventory">Inventory:</label>
-  <input id="PUT-inventory" type="text" name="inventory" value = '{{inventory}}'>
+  <input id="PUT-inventory" type="text" name="inventory" placeholder = '{{inventory}}' value = '{{inventory}}'>
 
   <input type="submit" value="Save">
 

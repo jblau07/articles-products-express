@@ -1,4 +1,5 @@
 const express = require('express');
+const knex = require('../db/knex.js');
 const handlebars = require('express-handlebars');
 const router = express.Router();
 
